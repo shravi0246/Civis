@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Services | CivicShield</title>
+
+    <style>
+        /* ==========================================
+           BASIC RESET & STYLES (MATCH CIVICSHIELD THEME)
+           ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f6f8;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* FLOATING SOS BUTTON ON EVERY PAGE */
+        .floating-sos {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background-color: #d62839;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            border: 3px solid #ffffff;
+            box-shadow: 0 4px 15px rgba(214, 40, 57, 0.5);
+            z-index: 999;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .floating-sos:hover {
+            background-color: #b91c2c;
+            transform: scale(1.08);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            height: 75px;
+            background-color: #0b1220;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+
+        .logo-box {
+            background-color: #d62839;
+            color: #ffffff;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #aeb7c5;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+
+        /* Hamburger button for mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+
+        /* HEADER / HERO */
+        .header {
+            background: #0b1220;
+            color: white;
+            padding: 60px 7%;
+        }
+
+        .red-title {
+            color: #e63946;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin: 10px 0;
+        }
+
+        .header p {
+            color: #aeb7c5;
+            max-width: 650px;
+            font-size: 15px;
+        }
+
+        /* MAIN SERVICES CONTAINER */
+        .services-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 5%;
+        }
+
+        /* MAP CARD */
+        .map-card {
+            background: #ffffff;
+            border: 1px solid #e1e4e9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+
+        .map-header {
+            padding: 20px 24px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .map-header h2 {
+            font-size: 20px;
+            color: #0b1220;
+            margin-bottom: 4px;
+        }
+
+        .map-header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .simple-map-frame {
+            width: 100%;
+            height: 520px;
+            border: 0;
+            display: block;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #0b1220;
+            color: #9aa5b5;
+            padding: 50px 7% 30px 7%;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .footer-col p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: #9aa5b5;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 25px;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 992px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 5%;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 75px;
+                left: 0;
+                width: 100%;
+                background-color: #0b1220;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px 5%;
+                gap: 15px;
+                display: none;
+                border-bottom: 2px solid #d62839;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                width: 100%;
+                padding: 6px 0;
+                font-size: 16px;
+            }
+
+            .header {
+                padding: 40px 5%;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+            .services-wrapper {
+                padding: 0 4%;
+            }
+
+            .simple-map-frame {
+                height: 380px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FLOATING SOS BUTTON ON EVERY PAGE -->
+    <a href="emergency.html" class="floating-sos" title="Emergency SOS - Click for Immediate Help">
+        SOS
+    </a>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-box">CS</span>
+            CivicShield
+        </a>
+
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav class="nav-links" id="nav-links">
+            <a href="index.html">Home</a>
+            <a href="report.html">Report</a>
+            <a href="track.html">Track</a>
+            <a href="safety-tips.html">Safety Tips</a>
+            <a href="nearby-services.html" class="active">Nearby Services</a>
+            <a href="emergency.html">Emergency</a>
+            <a href="about.html">About</a>
+        </nav>
+    </header>
+
+    <!-- HEADER / HERO -->
+    <section class="header">
+        <p class="red-title">EMERGENCY ASSISTANCE</p>
+        <h1>Nearby Services Map</h1>
+        <p>
+            Locate police stations, medical emergency facilities, and civic assistance centers on the map.
+        </p>
+    </section>
+
+    <!-- MAIN SERVICES CONTAINER -->
+    <main class="services-wrapper">
+
+        <!-- SIMPLE MAP CARD -->
+        <section class="map-card">
+            <div class="map-header">
+                <h2>Area Emergency Services Map</h2>
+                <p>Overview of local police stations and medical facilities</p>
+            </div>
+            <iframe 
+                class="simple-map-frame" 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=77.10%2C28.55%2C77.30%2C28.70&amp;layer=mapnik&amp;marker=28.6139%2C77.2090" 
+                title="Nearby Services Map" 
+                loading="lazy">
+            </iframe>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>CivicShield</h4>
+                <p>
+                    A digital crime reporting and emergency assistance platform developed as an academic project to make community safety accessible to everyone.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="report.html">Report Crime</a></li>
+                    <li><a href="track.html">Track Complaint</a></li>
+                    <li><a href="safety-tips.html">Safety Tips</a></li>
+                    <li><a href="nearby-services.html">Nearby Services</a></li>
+                    <li><a href="about.html">About Project</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Emergency Help</h4>
+                <ul>
+                    <li><a href="tel:100">Police: 100 / 911</a></li>
+                    <li><a href="tel:102">Ambulance: 102</a></li>
+                    <li><a href="tel:1091">Women Helpline: 1091</a></li>
+                    <li><a href="tel:112">National Helpline: 112</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Notice</h4>
+                <p>
+                    This is a student demonstration system. For ongoing violent crimes or immediate life-threatening situations, always call emergency services directly.
+                </p>
+            </div>
+        </div>
+
+        <p class="copyright">
+            &copy; 2026 CivicShield | Student Project. All rights reserved.
+        </p>
+    </footer>
+
+    <!-- BASIC JAVASCRIPT FOR MOBILE MENU -->
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("nav-links");
+            menu.classList.toggle("active");
+        }
+    </script>
+</body>
+
+</html>

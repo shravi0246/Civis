@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | CivicShield</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f6f8;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* FLOATING SOS BUTTON */
+        .floating-sos {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background-color: #d62839;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            border: 3px solid #ffffff;
+            box-shadow: 0 4px 15px rgba(214, 40, 57, 0.4);
+            z-index: 999;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .floating-sos:hover {
+            background-color: #b91c2c;
+            transform: scale(1.08);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            height: 75px;
+            background: #0b1220;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-box {
+            background: #d62839;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #aeb7c5;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+
+        .nav-sos {
+            background: #d62839;
+            color: white !important;
+            padding: 7px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .nav-sos:hover {
+            background: #b91c2c;
+        }
+
+        .nav-button {
+            background: #d62839;
+            color: white !important;
+            padding: 9px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .nav-button:hover {
+            background: #b91c2c;
+        }
+
+        /* Hamburger button for mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+
+        /* HEADER */
+        .header {
+            background: #0b1220;
+            color: white;
+            padding: 70px 7%;
+        }
+
+        .red-title {
+            color: #e63946;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin: 10px 0;
+        }
+
+        .header p:last-child {
+            color: #aeb7c5;
+            max-width: 600px;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 30px;
+        }
+
+        .about-card {
+            background: white;
+            padding: 40px;
+            border: 1px solid #e1e4e9;
+            border-left: 5px solid #0b1220;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .about-card h2 {
+            font-size: 26px;
+            color: #0b1220;
+            margin-bottom: 15px;
+        }
+
+        .about-card p {
+            color: #475569;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .about-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .info-box {
+            background: white;
+            padding: 30px 20px;
+            border: 1px solid #e1e4e9;
+            border-radius: 8px;
+            border-top: 4px solid #d62839;
+        }
+
+        .info-box h3 {
+            font-size: 18px;
+            color: #0b1220;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #0b1220;
+            color: #9aa5b5;
+            padding: 50px 7% 30px 7%;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr;
+            gap: 35px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .footer-col h4 {
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .footer-col p {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #9aa5b5;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 9px;
+        }
+
+        .footer-col a {
+            color: #cbd5e1;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: #ffffff;
+        }
+
+        .copyright {
+            font-size: 13px;
+            color: #717d8e;
+            border-top: 1px solid #162235;
+            padding-top: 25px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 900px) {
+            .grid-info {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width: 768px) {
+            .navbar {
+                padding: 0 5%;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 75px;
+                left: 0;
+                width: 100%;
+                background-color: #0b1220;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px 5%;
+                gap: 15px;
+                display: none;
+                border-bottom: 2px solid #d62839;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                width: 100%;
+                padding: 6px 0;
+                font-size: 16px;
+            }
+
+            .header {
+                padding: 50px 5%;
+            }
+
+            .header h1 {
+                font-size: 34px;
+            }
+
+            .main {
+                padding: 0 5%;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FLOATING SOS BUTTON ON EVERY PAGE -->
+    <a href="emergency.html" class="floating-sos" title="Emergency SOS - Click for Immediate Help">
+        SOS
+    </a>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-box">CS</span>
+            CivicShield
+        </a>
+
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav class="nav-links" id="nav-links">
+            <a href="index.html">Home</a>
+            <a href="report.html">Report</a>
+            <a href="track.html">Track</a>
+            <a href="safety-tips.html">Safety Tips</a>
+            <a href="nearby-services.html">Nearby Services</a>
+            <a href="emergency.html">Emergency</a>
+            <a href="about.html" class="active">About</a>
+        </nav>
+    </header>
+
+    <!-- HEADER -->
+    <section class="header">
+        <p class="red-title">ABOUT PROJECT</p>
+        <h1>About CivicShield</h1>
+        <p>
+            CivicShield aims to provide a simple and user-friendly platform where citizens can report incidents, access
+            emergency contacts, and track complaint progress. 
+        </p>
+    </section>
+
+    <!-- MAIN -->
+    <main class="main">
+        <div class="about-card">
+            <h2>Why CivicShield?</h2>
+            <p>
+                🔹 Easy crime and incident reporting<br>
+                🔹 Quick access to emergency helplines<br>
+                🔹 Complaint tracking and status updates<br>
+                🔹 Clean and beginner-friendly interface<br>
+                🔹 Focus on public awareness and safety
+            </p>
+            <p>
+                In many communities, incident reporting can be confusing or intimidating. CivicShield aims to simplify
+                the entire process by offering a clear interface where anyone can submit a complaint, track progress, or
+                access emergency support numbers without complications.
+            </p>
+        </div>
+
+        <div class="grid-info">
+            <div class="info-box">
+                <h3>Clean Code</h3>
+                <p>Built with beginner-friendly HTML, CSS, and minimal JavaScript ideal for college academic
+                    demonstrations.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Fully Responsive</h3>
+                <p>Designed to render cleanly across desktops, tablets, and smartphones with mobile hamburger
+                    navigation.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Community Safety</h3>
+                <p>Provides emergency contacts, quick crime reporting, and live report status tracking.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- EXPANDED SIMPLE FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>CivicShield</h4>
+                <p>
+                    A digital crime reporting platform concept developed as an academic project to make community safety
+                    and incident reporting accessible to everyone.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="report.html">Report Crime</a></li>
+                    <li><a href="track.html">Track Complaint</a></li>
+                    <li><a href="safety-tips.html">Safety Tips</a></li>
+                    <li><a href="nearby-services.html">Nearby Services</a></li>
+                    <li><a href="about.html">About Project</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Emergency Help</h4>
+                <ul>
+                    <li><a href="tel:100">Police: 100 / 911</a></li>
+                    <li><a href="tel:102">Ambulance: 102</a></li>
+                    <li><a href="tel:1091">Women Helpline: 1091</a></li>
+                    <li><a href="tel:112">National Helpline: 112</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Notice</h4>
+                <p>
+                    This is a student demonstration system. For ongoing violent crimes or life-threatening situations,
+                    always call emergency services directly.
+                </p>
+            </div>
+        </div>
+
+        <p class="copyright">
+            &copy; 2026 CivicShield | Student Project. All rights reserved.
+        </p>
+    </footer>
+
+    <!-- BASIC JAVASCRIPT -->
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("nav-links");
+            menu.classList.toggle("active");
+        }
+    </script>
+</body>
+
+</html>
