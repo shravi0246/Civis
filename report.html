@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Crime | CivicShield</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f6f8;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* FLOATING SOS BUTTON */
+        .floating-sos {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background-color: #d62839;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            border: 3px solid #ffffff;
+            box-shadow: 0 4px 15px rgba(214, 40, 57, 0.4);
+            z-index: 999;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .floating-sos:hover {
+            background-color: #b91c2c;
+            transform: scale(1.08);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            height: 75px;
+            background: #0b1220;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-box {
+            background: #d62839;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #aeb7c5;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+
+        .nav-sos {
+            background: #d62839;
+            color: white !important;
+            padding: 7px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .nav-sos:hover {
+            background: #b91c2c;
+        }
+
+        .nav-button {
+            background: #d62839;
+            color: white !important;
+            padding: 9px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .nav-button:hover {
+            background: #b91c2c;
+        }
+
+        /* Hamburger button for mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+
+        /* HEADER */
+        .header {
+            background: #0b1220;
+            color: white;
+            padding: 70px 7%;
+        }
+
+        .red-title {
+            color: #e63946;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin: 10px 0;
+        }
+
+        .header p:last-child {
+            color: #aeb7c5;
+            max-width: 600px;
+        }
+
+        /* FORM SECTION */
+        .form-section {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 0.7fr 1.3fr;
+            gap: 50px;
+        }
+
+        .side h2 {
+            font-size: 30px;
+            margin: 10px 0;
+            color: #0b1220;
+        }
+
+        .side p {
+            color: #667085;
+            line-height: 1.7;
+        }
+
+        .warning {
+            background: #fff0f1;
+            border-left: 4px solid #d62839;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+
+        .warning strong {
+            color: #d62839;
+        }
+
+        .warning p {
+            font-size: 13px;
+            margin-top: 5px;
+            color: #475569;
+        }
+
+        form {
+            background: white;
+            padding: 35px;
+            border: 1px solid #e1e4e9;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            color: #0b1220;
+        }
+
+        label:first-of-type {
+            margin-top: 0;
+        }
+
+        select,
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #fdfdfd;
+        }
+
+        select:focus,
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0b1220;
+        }
+
+        .check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            font-weight: normal;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .check input {
+            width: auto;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background: #d62839;
+            color: white;
+            border: none;
+            padding: 14px;
+            margin-top: 25px;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background: #b91c2c;
+        }
+
+        /* UPLOAD EVIDENCE STYLES */
+        .evidence-upload-box {
+            background: #fdfdfd;
+            border: 2px dashed #d0d5dd;
+            border-radius: 6px;
+            padding: 18px;
+            text-align: center;
+            transition: border-color 0.2s, background-color 0.2s;
+            margin-top: 6px;
+        }
+
+        .evidence-upload-box:hover,
+        .evidence-upload-box.dragover {
+            border-color: #0b1220;
+            background-color: #f8fafc;
+        }
+
+        .upload-dropzone {
+            cursor: pointer;
+            padding: 8px 10px;
+        }
+
+        .upload-icon {
+            font-size: 26px;
+            margin-bottom: 4px;
+        }
+
+        .upload-prompt {
+            font-size: 13.5px;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .upload-browse-btn {
+            display: inline-block;
+            background: #0b1220;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .upload-browse-btn:hover {
+            background: #1f2937;
+        }
+
+        .upload-formats-note {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 10px;
+        }
+
+        .evidence-preview-wrap {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .evidence-file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .file-icon {
+            font-size: 22px;
+        }
+
+        .file-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .file-name {
+            display: block;
+            font-size: 13.5px;
+            font-weight: bold;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .file-remove-btn {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            font-size: 20px;
+            line-height: 1;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .file-remove-btn:hover {
+            background: #fee2e2;
+        }
+
+        .image-preview-container {
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .image-preview-container img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* FORM VALIDATION STYLES */
+        .req-star {
+            color: #d62839;
+            font-weight: bold;
+            margin-left: 2px;
+        }
+
+        .error-msg {
+            display: none;
+            color: #d62839;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 2px;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        input.input-error,
+        textarea.input-error,
+        select.input-error {
+            border-color: #d62839 !important;
+            background-color: #fff9f9;
+        }
+
+        .form-column {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* SUCCESS CARD STYLES */
+        .success-card {
+            background: #ffffff;
+            border: 1px solid #bbf7d0;
+            border-top: 5px solid #16a34a;
+            border-radius: 8px;
+            padding: 35px 30px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(22, 163, 74, 0.12);
+            animation: cardFadeIn 0.4s ease-out;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon-badge {
+            width: 60px;
+            height: 60px;
+            background: #dcfce7;
+            color: #16a34a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 16px auto;
+            border: 2px solid #86efac;
+            box-shadow: 0 2px 10px rgba(22, 163, 74, 0.2);
+        }
+
+        .success-heading {
+            font-size: 22px;
+            color: #0b1220;
+            margin-bottom: 6px;
+        }
+
+        .success-subtext {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .report-id-container {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 16px 25px;
+            display: inline-block;
+            margin-bottom: 14px;
+            max-width: 100%;
+        }
+
+        .report-id-label {
+            display: block;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .report-id-code {
+            display: block;
+            font-size: 28px;
+            font-weight: 800;
+            color: #0b1220;
+            letter-spacing: 2px;
+        }
+
+        .success-instructions {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 22px;
+        }
+
+        .btn-track-success {
+            display: inline-block;
+            background: #d62839;
+            color: #ffffff !important;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(214, 40, 57, 0.25);
+        }
+
+        .btn-track-success:hover {
+            background: #b91c2c;
+            transform: translateY(-1px);
+        }
+
+        /* FOOTER */
+        footer {
+            background: #0b1220;
+            color: #9aa5b5;
+            padding: 50px 7% 30px 7%;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr;
+            gap: 35px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .footer-col h4 {
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .footer-col p {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #9aa5b5;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 9px;
+        }
+
+        .footer-col a {
+            color: #cbd5e1;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: #ffffff;
+        }
+
+        .copyright {
+            font-size: 13px;
+            color: #717d8e;
+            border-top: 1px solid #162235;
+            padding-top: 25px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 900px) {
+            .form-section {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width: 768px) {
+            .navbar {
+                padding: 0 5%;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 75px;
+                left: 0;
+                width: 100%;
+                background-color: #0b1220;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px 5%;
+                gap: 15px;
+                display: none;
+                border-bottom: 2px solid #d62839;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                width: 100%;
+                padding: 6px 0;
+                font-size: 16px;
+            }
+
+            .header {
+                padding: 50px 5%;
+            }
+
+            .header h1 {
+                font-size: 34px;
+            }
+
+            .form-section {
+                padding: 0 5%;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FLOATING SOS BUTTON ON EVERY PAGE -->
+    <a href="emergency.html" class="floating-sos" title="Emergency SOS - Click for Immediate Help">
+        SOS
+    </a>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-box">CS</span>
+            CivicShield
+        </a>
+
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav class="nav-links" id="nav-links">
+            <a href="index.html">Home</a>
+            <a href="report.html" class="active">Report</a>
+            <a href="track.html">Track</a>
+            <a href="safety-tips.html">Safety Tips</a>
+            <a href="nearby-services.html">Nearby Services</a>
+            <a href="emergency.html">Emergency</a>
+            <a href="about.html">About</a>
+        </nav>
+    </header>
+
+    <!-- HEADER -->
+    <section class="header">
+        <p class="red-title">INCIDENT REPORT</p>
+        <h1>Tell us what happened.</h1>
+        <p>
+            Provide accurate information about the incident. Fields marked with * are required.
+        </p>
+    </section>
+
+    <!-- FORM SECTION -->
+    <section class="form-section">
+        <div class="side">
+
+            <h2>Incident details</h2>
+            <p>
+                Tell us when, where and what happened. Providing clear information can make your report easier to review
+                and process.
+                <br>
+                • Provide accurate incident details.<br>
+                • Mention the correct location and date.<br>
+                • Upload evidence if available.<br>
+                • Use clear and concise descriptions.
+            </p>
+
+            <div class="warning">
+                <strong>Important</strong>
+                <p>
+                    If someone is in immediate danger, contact emergency services directly instead of relying only on
+                    this online form.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-column">
+            <form id="report-form" onsubmit="submitForm(event)" novalidate>
+                <label for="crime-type">Type of Crime <span class="req-star">*</span></label>
+                <select id="crime-type" required>
+                    <option value="">Select crime type</option>
+                    <option>Theft / Burglary</option>
+                    <option>Assault / Violence</option>
+                    <option>Fraud / Scam</option>
+                    <option>Cyber Crime</option>
+                    <option>Harassment</option>
+                    <option>Vandalism / Property Damage</option>
+                    <option>Other</option>
+                </select>
+
+                <label for="crime-date">Date of Incident <span class="req-star">*</span></label>
+                <input type="date" id="crime-date" required>
+
+                <label for="crime-time">Approximate Time</label>
+                <input type="time" id="crime-time">
+
+                <label for="crime-loc">Location <span class="req-star">*</span></label>
+                <input type="text" id="crime-loc" placeholder="Enter incident location or landmark" required>
+
+                <label for="crime-desc">Description <span class="req-star">*</span></label>
+                <textarea id="crime-desc" rows="5" placeholder="Describe what happened in detail..."
+                    required></textarea>
+
+                <!-- UPLOAD EVIDENCE SECTION -->
+                <label for="crime-evidence">Upload Evidence (Optional)</label>
+                <div class="evidence-upload-box" id="evidence-box">
+                    <input type="file" id="crime-evidence"
+                        accept=".jpg,.jpeg,.png,.mp4,.pdf,.doc,.docx,image/jpeg,image/png,video/mp4,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        style="display: none;" onchange="handleEvidenceFile(this)">
+                    <div class="upload-dropzone" onclick="document.getElementById('crime-evidence').click()">
+                        <div class="upload-icon">&#128193;</div>
+                        <p class="upload-prompt"><strong>Click to upload evidence</strong> or drag &amp; drop file</p>
+                        <span class="upload-browse-btn">Browse Files</span>
+                    </div>
+                    <p class="upload-formats-note">Supported formats: JPG, PNG, JPEG, MP4, PDF, DOC</p>
+
+                    <!-- File Info and Preview Display -->
+                    <div class="evidence-preview-wrap" id="evidence-preview-wrap" style="display: none;">
+                        <div class="evidence-file-info">
+                            <span class="file-icon" id="preview-file-icon">&#128196;</span>
+                            <div class="file-details">
+                                <span class="file-name" id="preview-file-name">filename.jpg</span>
+                                <span class="file-size" id="preview-file-size">1.2 MB</span>
+                            </div>
+                            <button type="button" class="file-remove-btn" onclick="removeEvidenceFile()"
+                                title="Remove file">&times;</button>
+                        </div>
+                        <div class="image-preview-container" id="image-preview-container" style="display: none;">
+                            <img id="evidence-image-preview" src="" alt="Evidence Image Preview">
+                        </div>
+                    </div>
+                </div>
+
+                <label for="crime-name">Your Name <span class="req-star">*</span></label>
+                <input type="text" id="crime-name" placeholder="Enter your full name" required>
+                <div class="error-msg" id="name-error">Name is required.</div>
+
+                <label for="crime-phone">Contact Number <span class="req-star">*</span></label>
+                <input type="tel" id="crime-phone" placeholder="Enter 10-digit phone number" maxlength="10" required>
+                <div class="error-msg" id="phone-error">Phone Number is required.</div>
+
+                <label class="check">
+                    <input type="checkbox" id="confirm-check" required>
+                    I confirm that the information provided is accurate to the best of my knowledge.
+                </label>
+
+                <button type="submit">Submit Report &rarr;</button>
+            </form>
+
+            <!-- SUCCESS CARD (DISPLAYED ONLY AFTER SUCCESSFUL SUBMISSION) -->
+            <div id="success-card" class="success-card" style="display: none;">
+                <div class="success-icon-badge">
+                    <span class="success-check">&#10004;</span>
+                </div>
+                <h3 class="success-heading">Complaint Submitted Successfully!</h3>
+                <p class="success-subtext">Your incident report has been recorded in the CivicShield system.</p>
+
+                <div class="report-id-container">
+                    <span class="report-id-label">Your Report ID:</span>
+                    <span class="report-id-code">CS-2026-1042</span>
+                </div>
+
+                <p class="success-instructions">Please save this ID to track your complaint.</p>
+
+                <div>
+                    <a href="track.html" class="btn-track-success">Track Report &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPANDED SIMPLE FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>CivicShield</h4>
+                <p>
+                    A digital crime reporting platform concept developed as an academic project to make community safety
+                    and incident reporting accessible to everyone.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="report.html">Report Crime</a></li>
+                    <li><a href="track.html">Track Complaint</a></li>
+                    <li><a href="safety-tips.html">Safety Tips</a></li>
+                    <li><a href="nearby-services.html">Nearby Services</a></li>
+                    <li><a href="about.html">About Project</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Emergency Help</h4>
+                <ul>
+                    <li><a href="tel:100">Police: 100 / 911</a></li>
+                    <li><a href="tel:102">Ambulance: 102</a></li>
+                    <li><a href="tel:1091">Women Helpline: 1091</a></li>
+                    <li><a href="tel:112">National Helpline: 112</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Notice</h4>
+                <p>
+                    This is a student demonstration system. For ongoing violent crimes or life-threatening situations,
+                    always call emergency services directly.
+                </p>
+            </div>
+        </div>
+
+        <p class="copyright">
+            &copy; 2026 CivicShield | Student Project. All rights reserved.
+        </p>
+    </footer>
+
+    <!-- BASIC JAVASCRIPT -->
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("nav-links");
+            menu.classList.toggle("active");
+        }
+
+        // Handle Evidence File Upload & Preview
+        function handleEvidenceFile(input) {
+            var file = input.files && input.files[0];
+            if (!file) return;
+
+            var previewWrap = document.getElementById("evidence-preview-wrap");
+            var nameEl = document.getElementById("preview-file-name");
+            var sizeEl = document.getElementById("preview-file-size");
+            var iconEl = document.getElementById("preview-file-icon");
+            var imgContainer = document.getElementById("image-preview-container");
+            var imgPreview = document.getElementById("evidence-image-preview");
+
+            // Display file name & formatted size
+            nameEl.textContent = file.name;
+            var sizeInKB = (file.size / 1024).toFixed(1);
+            var sizeStr = sizeInKB > 1024 ? (sizeInKB / 1024).toFixed(2) + " MB" : sizeInKB + " KB";
+            sizeEl.textContent = sizeStr;
+
+            var ext = file.name.split('.').pop().toLowerCase();
+            var isImage = ['jpg', 'jpeg', 'png'].includes(ext) || file.type.startsWith('image/');
+            var isVideo = ext === 'mp4' || file.type === 'video/mp4';
+            var isDoc = ['pdf', 'doc', 'docx'].includes(ext) || file.type.includes('pdf') || file.type.includes('word');
+
+            if (isImage) {
+                iconEl.innerHTML = "&#128444;"; // image icon
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPreview.src = e.target.result;
+                    imgContainer.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imgContainer.style.display = "none";
+                imgPreview.src = "";
+                if (isVideo) {
+                    iconEl.innerHTML = "&#127916;"; // video icon
+                } else if (isDoc) {
+                    iconEl.innerHTML = "&#128196;"; // document icon
+                } else {
+                    iconEl.innerHTML = "&#128194;";
+                }
+            }
+
+            previewWrap.style.display = "block";
+        }
+
+        // Remove Evidence File
+        function removeEvidenceFile() {
+            var input = document.getElementById("crime-evidence");
+            if (input) input.value = "";
+            var previewWrap = document.getElementById("evidence-preview-wrap");
+            if (previewWrap) previewWrap.style.display = "none";
+            var imgPreview = document.getElementById("evidence-image-preview");
+            if (imgPreview) imgPreview.src = "";
+            var imgContainer = document.getElementById("image-preview-container");
+            if (imgContainer) imgContainer.style.display = "none";
+        }
+
+        // Drag & Drop Support
+        var dropZone = document.getElementById("evidence-box");
+        if (dropZone) {
+            ['dragenter', 'dragover'].forEach(function (eventName) {
+                dropZone.addEventListener(eventName, function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('dragover');
+                }, false);
+            });
+            ['dragleave', 'drop'].forEach(function (eventName) {
+                dropZone.addEventListener(eventName, function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('dragover');
+                }, false);
+            });
+            dropZone.addEventListener('drop', function (e) {
+                var dt = e.dataTransfer;
+                var files = dt.files;
+                if (files && files.length) {
+                    var fileInput = document.getElementById('crime-evidence');
+                    fileInput.files = files;
+                    handleEvidenceFile(fileInput);
+                }
+            }, false);
+        }
+
+        // Real-time input listeners for validation
+        var nameInput = document.getElementById("crime-name");
+        var nameError = document.getElementById("name-error");
+        if (nameInput) {
+            nameInput.addEventListener("input", function () {
+                if (this.value.trim().length > 0) {
+                    nameError.textContent = "";
+                    nameError.classList.remove("show");
+                    this.classList.remove("input-error");
+                }
+            });
+        }
+
+        var phoneInput = document.getElementById("crime-phone");
+        var phoneError = document.getElementById("phone-error");
+        if (phoneInput) {
+            phoneInput.addEventListener("input", function () {
+                // Restrict input strictly to numbers, max 10 digits
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                if (this.value.length === 10) {
+                    phoneError.textContent = "";
+                    phoneError.classList.remove("show");
+                    this.classList.remove("input-error");
+                } else if (this.value.length > 0) {
+                    phoneError.textContent = "Please enter a valid 10-digit phone number.";
+                    phoneError.classList.add("show");
+                    this.classList.add("input-error");
+                }
+            });
+        }
+
+        // Form Submission Handler with Validation
+        function submitForm(event) {
+            event.preventDefault();
+
+            var isValid = true;
+            var firstInvalidEl = null;
+
+            // 1. Validate Type of Crime
+            var crimeType = document.getElementById("crime-type");
+            if (crimeType && !crimeType.value) {
+                crimeType.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = crimeType;
+                isValid = false;
+            } else if (crimeType) {
+                crimeType.classList.remove("input-error");
+            }
+
+            // 2. Validate Incident Date
+            var crimeDate = document.getElementById("crime-date");
+            if (crimeDate && !crimeDate.value) {
+                crimeDate.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = crimeDate;
+                isValid = false;
+            } else if (crimeDate) {
+                crimeDate.classList.remove("input-error");
+            }
+
+            // 3. Validate Location
+            var crimeLoc = document.getElementById("crime-loc");
+            if (crimeLoc && !crimeLoc.value.trim()) {
+                crimeLoc.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = crimeLoc;
+                isValid = false;
+            } else if (crimeLoc) {
+                crimeLoc.classList.remove("input-error");
+            }
+
+            // 4. Validate Description
+            var crimeDesc = document.getElementById("crime-desc");
+            if (crimeDesc && !crimeDesc.value.trim()) {
+                crimeDesc.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = crimeDesc;
+                isValid = false;
+            } else if (crimeDesc) {
+                crimeDesc.classList.remove("input-error");
+            }
+
+            // 5. Validate Mandatory Name
+            if (nameInput) {
+                var nameVal = nameInput.value.trim();
+                if (!nameVal) {
+                    nameError.textContent = "Name is required.";
+                    nameError.classList.add("show");
+                    nameInput.classList.add("input-error");
+                    if (!firstInvalidEl) firstInvalidEl = nameInput;
+                    isValid = false;
+                } else {
+                    nameError.textContent = "";
+                    nameError.classList.remove("show");
+                    nameInput.classList.remove("input-error");
+                }
+            }
+
+            // 6. Validate Mandatory Phone Number
+            if (phoneInput) {
+                var phoneVal = phoneInput.value.trim();
+                if (!phoneVal) {
+                    phoneError.textContent = "Phone Number is required.";
+                    phoneError.classList.add("show");
+                    phoneInput.classList.add("input-error");
+                    if (!firstInvalidEl) firstInvalidEl = phoneInput;
+                    isValid = false;
+                } else if (!/^\d{10}$/.test(phoneVal)) {
+                    phoneError.textContent = "Please enter a valid 10-digit phone number.";
+                    phoneError.classList.add("show");
+                    phoneInput.classList.add("input-error");
+                    if (!firstInvalidEl) firstInvalidEl = phoneInput;
+                    isValid = false;
+                } else {
+                    phoneError.textContent = "";
+                    phoneError.classList.remove("show");
+                    phoneInput.classList.remove("input-error");
+                }
+            }
+
+            // 7. Validate Checkbox
+            var confirmCheck = document.getElementById("confirm-check");
+            if (confirmCheck && !confirmCheck.checked) {
+                confirmCheck.focus();
+                isValid = false;
+            }
+
+            // Stop if any field is invalid
+            if (!isValid) {
+                if (firstInvalidEl) {
+                    firstInvalidEl.focus();
+                }
+                return false;
+            }
+
+            // On Successful Submission:
+            // Display professional success card below the form
+            var successCard = document.getElementById("success-card");
+            if (successCard) {
+                successCard.style.display = "block";
+                setTimeout(function () {
+                    successCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }, 100);
+            }
+
+            // Reset form fields and evidence upload
+            event.target.reset();
+            removeEvidenceFile();
+        }
+    </script>
+</body>
+
+</html>
