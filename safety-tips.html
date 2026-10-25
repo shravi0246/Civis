@@ -174,10 +174,203 @@
             padding: 0 30px;
         }
 
+        /* SEARCH & FILTER CONTROLS */
+        .tips-controls {
+            background: #ffffff;
+            border: 1px solid #e1e4e9;
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tips-search-wrap {
+            display: flex;
+            gap: 12px;
+        }
+
+        .tips-search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #d0d5dd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .tips-search-input:focus {
+            outline: none;
+            border-color: #0b1220;
+        }
+
+        .tips-filter-tags {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tips-filter-tags span {
+            font-size: 13px;
+            font-weight: bold;
+            color: #64748b;
+            margin-right: 5px;
+        }
+
+        .filter-btn {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background: #e2e8f0;
+            color: #0b1220;
+        }
+
+        .filter-btn.active {
+            background: #0b1220;
+            color: #ffffff;
+            border-color: #0b1220;
+        }
+
+        .filter-btn.active-emergency {
+            background: #d62839;
+            color: #ffffff;
+            border-color: #d62839;
+        }
+
         .tips-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #e1e4e9;
+            border-top: 4px solid #0b1220;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .tip-card.accent {
+            border-top-color: #d62839;
+        }
+
+        .tip-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .tip-tag {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .tip-tag.tag-accent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .tip-actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-tip-btn {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #0b1220;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .copy-tip-btn:hover {
+            background: #0b1220;
+            color: #ffffff;
+            border-color: #0b1220;
+        }
+
+        .toggle-accordion-btn {
+            background: none;
+            border: none;
+            color: #d62839;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .no-tips-found {
+            display: none;
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            background: #ffffff;
+            border: 1px solid #e1e4e9;
+            border-radius: 8px;
+        }
+
+        /* Toast feedback */
+        .toast-notify {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0b1220;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            border: 1px solid #d62839;
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast-notify.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
 
         .tip-card {
@@ -379,49 +572,108 @@
 
     <!-- MAIN CONTENT -->
     <main class="main">
-        <div class="tips-grid">
+        <!-- TIPS INTERACTIVE SEARCH & CATEGORY BAR -->
+        <div class="tips-controls">
+            <div class="tips-search-wrap">
+                <input type="text" id="tips-search-input" class="tips-search-input" placeholder="Search safety advice (e.g. passwords, walking, locks, emergency)..." autocomplete="off">
+            </div>
+            <div class="tips-filter-tags">
+                <span>Filter Category:</span>
+                <button type="button" class="filter-btn active" data-category="all" onclick="filterCategory('all', this)">All Tips</button>
+                <button type="button" class="filter-btn" data-category="street" onclick="filterCategory('street', this)">Street Safety</button>
+                <button type="button" class="filter-btn" data-category="cyber" onclick="filterCategory('cyber', this)">Cyber &amp; Online Fraud</button>
+                <button type="button" class="filter-btn" data-category="home" onclick="filterCategory('home', this)">Home Security</button>
+                <button type="button" class="filter-btn" data-category="emergency" onclick="filterCategory('emergency', this)">Emergency Ready</button>
+            </div>
+        </div>
+
+        <div class="tips-grid" id="tips-grid">
             <!-- Tip 1: Personal Safety -->
-            <div class="tip-card accent">
-                <h3>Personal &amp; Street Safety</h3>
-                <ul>
+            <div class="tip-card accent" data-category="street" data-title="Personal & Street Safety">
+                <div class="tip-card-header">
+                    <h3>Personal &amp; Street Safety</h3>
+                    <span class="tip-tag tag-accent">Street</span>
+                </div>
+                <ul class="tip-list">
                     <li><strong>Stay Alert:</strong> Avoid looking down at your phone while walking through deserted areas at night.</li>
                     <li><strong>Well-Lit Routes:</strong> Stick to busy, well-illuminated streets rather than taking isolated shortcuts.</li>
                     <li><strong>Emergency Numbers:</strong> Keep primary contacts on speed-dial on your mobile phone.</li>
                     <li><strong>Trust Your Instincts:</strong> If you feel uncomfortable or followed, head towards the nearest public store.</li>
                 </ul>
+                <div class="tip-actions">
+                    <button type="button" class="toggle-accordion-btn" onclick="toggleCardTips(this)">Hide Details</button>
+                    <button type="button" class="copy-tip-btn" onclick="copyCardTips(this)">
+                        <span>📋</span> Copy Tips
+                    </button>
+                </div>
             </div>
 
             <!-- Tip 2: Cyber Safety -->
-            <div class="tip-card">
-                <h3>Cybercrime &amp; Online Fraud</h3>
-                <ul>
+            <div class="tip-card" data-category="cyber" data-title="Cybercrime & Online Fraud">
+                <div class="tip-card-header">
+                    <h3>Cybercrime &amp; Online Fraud</h3>
+                    <span class="tip-tag">Cyber</span>
+                </div>
+                <ul class="tip-list">
                     <li><strong>Never Share OTP:</strong> Police and bank officials will never ask for your confidential one-time passwords.</li>
                     <li><strong>Verify Links:</strong> Check URLs before clicking on urgent SMS or email lottery claims.</li>
                     <li><strong>Strong Passwords:</strong> Use unique, complex passwords for your bank and email accounts.</li>
                     <li><strong>Immediate Action:</strong> Report financial scams within 24 hours to freeze suspicious transactions.</li>
                 </ul>
+                <div class="tip-actions">
+                    <button type="button" class="toggle-accordion-btn" onclick="toggleCardTips(this)">Hide Details</button>
+                    <button type="button" class="copy-tip-btn" onclick="copyCardTips(this)">
+                        <span>📋</span> Copy Tips
+                    </button>
+                </div>
             </div>
 
             <!-- Tip 3: Home Security -->
-            <div class="tip-card">
-                <h3>Home &amp; Neighborhood Security</h3>
-                <ul>
+            <div class="tip-card" data-category="home" data-title="Home & Neighborhood Security">
+                <div class="tip-card-header">
+                    <h3>Home &amp; Neighborhood Security</h3>
+                    <span class="tip-tag">Home</span>
+                </div>
+                <ul class="tip-list">
                     <li><strong>Secure Locks:</strong> Double check deadbolts on entry doors and ground-floor windows before sleeping.</li>
                     <li><strong>Adequate Lighting:</strong> Maintain bright motion-detector lighting around gates and driveway areas.</li>
                     <li><strong>Know Neighbors:</strong> Share contacts with trusted neighbors to watch over homes during vacations.</li>
                     <li><strong>Report Suspicious Persons:</strong> Log unknown persons loitering around residential homes on CivicShield.</li>
                 </ul>
+                <div class="tip-actions">
+                    <button type="button" class="toggle-accordion-btn" onclick="toggleCardTips(this)">Hide Details</button>
+                    <button type="button" class="copy-tip-btn" onclick="copyCardTips(this)">
+                        <span>📋</span> Copy Tips
+                    </button>
+                </div>
             </div>
 
             <!-- Tip 4: Emergency Readiness -->
-            <div class="tip-card accent">
-                <h3>Emergency Preparedness</h3>
-                <ul>
+            <div class="tip-card accent" data-category="emergency" data-title="Emergency Preparedness">
+                <div class="tip-card-header">
+                    <h3>Emergency Preparedness</h3>
+                    <span class="tip-tag tag-accent">Emergency</span>
+                </div>
+                <ul class="tip-list">
                     <li><strong>Know Helplines:</strong> Memorize Police (100 / 911), Ambulance (102), and Unified Emergency (112).</li>
                     <li><strong>Medical Info:</strong> Keep an ID card with your blood group and emergency contact in your wallet.</li>
                     <li><strong>Safe Meeting Point:</strong> Agree on a family rendezvous point in case of neighborhood crises.</li>
                     <li><strong>Document Incidents:</strong> Note time, vehicle registration numbers, and visual descriptions accurately.</li>
                 </ul>
+                <div class="tip-actions">
+                    <button type="button" class="toggle-accordion-btn" onclick="toggleCardTips(this)">Hide Details</button>
+                    <button type="button" class="copy-tip-btn" onclick="copyCardTips(this)">
+                        <span>📋</span> Copy Tips
+                    </button>
+                </div>
+            </div>
+
+            <!-- No results message -->
+            <div class="no-tips-found" id="no-tips-msg">
+                <div style="font-size: 32px; margin-bottom: 10px;">🔍</div>
+                <h4 style="color: #0b1220; margin-bottom: 6px;">No Safety Tips Match Your Search</h4>
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">Try searching for different keywords or reset your category filters.</p>
+                <button type="button" class="filter-btn active" onclick="resetFilters()">Reset All Filters</button>
             </div>
         </div>
     </main>
@@ -471,12 +723,171 @@
         </p>
     </footer>
 
-    <!-- BASIC JAVASCRIPT -->
+    <!-- TOAST NOTIFICATION -->
+    <div id="safety-toast" class="toast-notify">Safety tips copied to clipboard!</div>
+
+    <!-- INTERMEDIATE JAVASCRIPT LOGIC -->
     <script>
+        var currentCategory = "all";
+        var toastTimeout = null;
+
+        // Mobile menu toggle with outside click and escape key handling
         function toggleMenu() {
             var menu = document.getElementById("nav-links");
             menu.classList.toggle("active");
         }
+
+        document.addEventListener("click", function (event) {
+            var nav = document.getElementById("nav-links");
+            var hamburger = document.querySelector(".hamburger");
+            if (nav && nav.classList.contains("active")) {
+                if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+                    nav.classList.remove("active");
+                }
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                var nav = document.getElementById("nav-links");
+                if (nav) nav.classList.remove("active");
+            }
+        });
+
+        // Category filter handler
+        function filterCategory(category, buttonEl) {
+            currentCategory = category;
+
+            // Update active button state
+            var buttons = document.querySelectorAll(".filter-btn");
+            buttons.forEach(function (btn) {
+                btn.classList.remove("active", "active-emergency");
+            });
+
+            if (buttonEl) {
+                if (category === "emergency") {
+                    buttonEl.classList.add("active-emergency");
+                } else {
+                    buttonEl.classList.add("active");
+                }
+            }
+
+            applyFilters();
+        }
+
+        // Apply both search query and active category
+        function applyFilters() {
+            var searchInput = document.getElementById("tips-search-input");
+            var query = searchInput ? searchInput.value.toLowerCase().trim() : "";
+            var cards = document.querySelectorAll(".tip-card");
+            var visibleCount = 0;
+
+            cards.forEach(function (card) {
+                var cardCat = card.getAttribute("data-category") || "";
+                var cardText = card.innerText.toLowerCase();
+
+                var matchesCat = (currentCategory === "all" || cardCat === currentCategory);
+                var matchesSearch = (!query || cardText.indexOf(query) !== -1);
+
+                if (matchesCat && matchesSearch) {
+                    card.style.display = "flex";
+                    visibleCount++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            var noTipsEl = document.getElementById("no-tips-msg");
+            if (noTipsEl) {
+                noTipsEl.style.display = visibleCount === 0 ? "block" : "none";
+            }
+        }
+
+        // Reset all filters to default
+        function resetFilters() {
+            var searchInput = document.getElementById("tips-search-input");
+            if (searchInput) searchInput.value = "";
+            var allBtn = document.querySelector('.filter-btn[data-category="all"]');
+            filterCategory("all", allBtn);
+        }
+
+        // Accordion toggle on individual card
+        function toggleCardTips(btn) {
+            var card = btn.closest(".tip-card");
+            if (!card) return;
+            var list = card.querySelector(".tip-list");
+            if (!list) return;
+
+            if (list.style.display === "none") {
+                list.style.display = "block";
+                btn.innerText = "Hide Details";
+            } else {
+                list.style.display = "none";
+                btn.innerText = "Show Details";
+            }
+        }
+
+        // Copy tips of a card to clipboard
+        function copyCardTips(btn) {
+            var card = btn.closest(".tip-card");
+            if (!card) return;
+
+            var title = card.querySelector("h3") ? card.querySelector("h3").innerText : "CivicShield Safety Tips";
+            var items = card.querySelectorAll("li");
+            var textLines = [title + " (CivicShield Safety Guidelines):"];
+
+            items.forEach(function (li, idx) {
+                textLines.push((idx + 1) + ". " + li.innerText);
+            });
+
+            var combinedText = textLines.join("\n");
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(combinedText).then(function () {
+                    showToast("Copied " + title + " to clipboard!");
+                }).catch(function () {
+                    fallbackCopy(combinedText);
+                });
+            } else {
+                fallbackCopy(combinedText);
+            }
+        }
+
+        function fallbackCopy(text) {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand("copy");
+                showToast("Safety tips copied to clipboard!");
+            } catch (err) {
+                console.warn("Copy fallback failed:", err);
+            }
+            document.body.removeChild(ta);
+        }
+
+        function showToast(message) {
+            var toast = document.getElementById("safety-toast");
+            if (!toast) return;
+            toast.innerText = message;
+            toast.classList.add("show");
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(function () {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+        // Event listeners on search input
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchInput = document.getElementById("tips-search-input");
+            if (searchInput) {
+                searchInput.addEventListener("input", applyFilters);
+            }
+        });
     </script>
 </body>
 

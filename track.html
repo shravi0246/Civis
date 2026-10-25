@@ -222,6 +222,46 @@
             background: #b91c2c;
         }
 
+        /* Demo ID quick links */
+        .sample-ids {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .sample-chip {
+            background: #eef2f6;
+            color: #0b1220;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .sample-chip:hover {
+            background: #0b1220;
+            color: #ffffff;
+        }
+
+        .track-error-msg {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
         /* STATUS CARD */
         .status-card {
             background: white;
@@ -229,6 +269,7 @@
             border: 1px solid #e1e4e9;
             border-radius: 8px;
             border-left: 5px solid #d62839;
+            transition: 0.3s;
         }
 
         .status-top {
@@ -260,6 +301,55 @@
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.status-submitted {
+            background: #e8f1fd;
+            color: #1d6fd8;
+        }
+
+        .status-badge.status-review {
+            background: #ffe6e8;
+            color: #d62839;
+        }
+
+        .status-badge.status-investigation {
+            background: #fff4de;
+            color: #b57700;
+        }
+
+        .status-badge.status-resolved {
+            background: #e6f9ed;
+            color: #168a44;
+        }
+
+        /* Report Meta Grid */
+        .report-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+
+        .meta-item-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-item-val {
+            font-size: 14px;
+            color: #0b1220;
+            font-weight: 600;
+            margin-top: 2px;
         }
 
         /* TIMELINE */
@@ -498,37 +588,66 @@
         <div class="search-box">
             <label for="track-input">Report ID</label>
             <div class="search">
-                <input type="text" id="track-input" placeholder="Example: CS-2026-1042">
-                <button type="button" onclick="trackReport()">Track</button>
+                <input type="text" id="track-input" placeholder="Example: CS-2026-1042" autocomplete="off">
+                <button type="button" id="track-btn" onclick="trackReport()">Track</button>
             </div>
+            <div class="sample-ids">
+                <span>Quick Demo IDs:</span>
+                <button type="button" class="sample-chip" onclick="quickFill('CS-2026-1042')">CS-2026-1042 (Review)</button>
+                <button type="button" class="sample-chip" onclick="quickFill('CS-2026-0819')">CS-2026-0819 (Investigation)</button>
+                <button type="button" class="sample-chip" onclick="quickFill('CS-2026-0150')">CS-2026-0150 (Resolved)</button>
+                <button type="button" class="sample-chip" onclick="quickFill('CS-2026-0044')">CS-2026-0044 (Submitted)</button>
+            </div>
+            <div id="track-error" class="track-error-msg"></div>
         </div>
 
+        <!-- FOUND REPORT CARD -->
         <div class="status-card" id="status-display">
             <div class="status-top">
                 <div>
                     <span class="status-id">REPORT ID</span>
                     <h3 id="display-id">CS-2026-1042</h3>
                 </div>
-                <span class="status-badge" id="display-status">UNDER REVIEW</span>
+                <span class="status-badge status-review" id="display-status">UNDER REVIEW</span>
             </div>
 
-            <div class="timeline">
-                <div class="step done">
+            <!-- Report Details Summary -->
+            <div class="report-meta-grid" id="report-meta">
+                <div>
+                    <div class="meta-item-label">Incident Type</div>
+                    <div class="meta-item-val" id="meta-type">Theft / Burglary</div>
+                </div>
+                <div>
+                    <div class="meta-item-label">Date Reported</div>
+                    <div class="meta-item-val" id="meta-date">Oct 24, 2026</div>
+                </div>
+                <div>
+                    <div class="meta-item-label">Location / City</div>
+                    <div class="meta-item-val" id="meta-location">Central District</div>
+                </div>
+                <div>
+                    <div class="meta-item-label">Assigned Officer</div>
+                    <div class="meta-item-val" id="meta-officer">Inspector R. Sharma</div>
+                </div>
+            </div>
+
+            <div class="timeline" id="status-timeline">
+                <div class="step done" id="step-1">
                     <div class="circle">&check;</div>
                     <span>Submitted</span>
                 </div>
-                <div class="line"></div>
-                <div class="step current">
+                <div class="line" id="line-1"></div>
+                <div class="step current" id="step-2">
                     <div class="circle">02</div>
                     <span>Under Review</span>
                 </div>
-                <div class="line"></div>
-                <div class="step">
+                <div class="line" id="line-2"></div>
+                <div class="step" id="step-3">
                     <div class="circle">03</div>
                     <span>Investigation</span>
                 </div>
-                <div class="line"></div>
-                <div class="step">
+                <div class="line" id="line-3"></div>
+                <div class="step" id="step-4">
                     <div class="circle">04</div>
                     <span>Resolved</span>
                 </div>
@@ -539,6 +658,19 @@
                 <p id="display-desc">
                     The submitted information is being checked by our desk officer before moving to local police investigation.
                 </p>
+            </div>
+        </div>
+
+        <!-- NOT FOUND CARD (Initially Hidden) -->
+        <div class="status-card" id="not-found-card" style="display: none; border-left-color: #ef4444; text-align: center; padding: 40px 20px;">
+            <div style="font-size: 40px; margin-bottom: 10px;">🔍</div>
+            <h3 style="color: #0b1220; margin-bottom: 8px;">Report Not Found</h3>
+            <p id="not-found-desc" style="color: #64748b; max-width: 500px; margin: 0 auto 20px auto; font-size: 14px;">
+                We could not find any active report matching the ID you provided.
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button type="button" class="sample-chip" onclick="quickFill('CS-2026-1042')">Try Sample Report (CS-2026-1042)</button>
+                <a href="report.html" style="display: inline-block; background: #d62839; color: white; padding: 8px 16px; border-radius: 5px; font-size: 13px; font-weight: bold;">File New Report</a>
             </div>
         </div>
     </main>
@@ -588,23 +720,216 @@
         </p>
     </footer>
 
-    <!-- BASIC JAVASCRIPT -->
+    <!-- INTERMEDIATE JAVASCRIPT LOGIC -->
     <script>
+        // Sample in-memory reports database for demo / testing
+        var sampleDatabase = {
+            "CS-2026-1042": {
+                id: "CS-2026-1042",
+                statusText: "UNDER REVIEW",
+                statusCode: "review",
+                stepIndex: 2,
+                crimeType: "Theft / Burglary",
+                date: "Oct 24, 2026",
+                location: "Central District, Block 4",
+                officer: "Inspector R. Sharma (Desk Triage)",
+                title: "Your report is currently under review.",
+                desc: "The submitted information is being checked by our desk officer before moving to the local police investigation division."
+            },
+            "CS-2026-0819": {
+                id: "CS-2026-0819",
+                statusText: "INSPECTION & INVESTIGATION",
+                statusCode: "investigation",
+                stepIndex: 3,
+                crimeType: "Cyber Fraud / Phishing",
+                date: "Oct 21, 2026",
+                location: "Cyber Crime Cell - Unit 3",
+                officer: "Sub-Inspector V. Kulkarni",
+                title: "Active investigation underway.",
+                desc: "Assigned to the Cyber Investigation Cell. Banking transaction logs and IP traces are actively being analyzed."
+            },
+            "CS-2026-0150": {
+                id: "CS-2026-0150",
+                statusText: "RESOLVED",
+                statusCode: "resolved",
+                stepIndex: 4,
+                crimeType: "Vehicle Theft",
+                date: "Oct 15, 2026",
+                location: "North Precinct",
+                officer: "Inspector A. Verma",
+                title: "Case successfully resolved & closed.",
+                desc: "The recovered vehicle was matched with registration records and handed over to the owner. Final closing report filed."
+            },
+            "CS-2026-0044": {
+                id: "CS-2026-0044",
+                statusText: "SUBMITTED",
+                statusCode: "submitted",
+                stepIndex: 1,
+                crimeType: "Public Disturbance",
+                date: "Today",
+                location: "East Station Patrol",
+                officer: "Duty Officer Triage",
+                title: "Report received in system.",
+                desc: "Your report has been logged and assigned an incident queue priority. You will receive an SMS update once assigned."
+            }
+        };
+
+        // Mobile menu toggle with outside click and escape key handling
         function toggleMenu() {
             var menu = document.getElementById("nav-links");
             menu.classList.toggle("active");
         }
 
-        function trackReport() {
-            var input = document.getElementById("track-input").value.trim();
-            if (input !== "") {
-                document.getElementById("display-id").innerText = input.toUpperCase();
-                document.getElementById("status-display").style.display = "block";
-                alert("Report found! Displaying status for: " + input.toUpperCase());
-            } else {
-                alert("Please enter a valid Report ID (e.g. CS-2026-1042)");
+        document.addEventListener("click", function (event) {
+            var nav = document.getElementById("nav-links");
+            var hamburger = document.querySelector(".hamburger");
+            if (nav && nav.classList.contains("active")) {
+                if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+                    nav.classList.remove("active");
+                }
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                var nav = document.getElementById("nav-links");
+                if (nav) nav.classList.remove("active");
+            }
+        });
+
+        // Quick fill sample ID
+        function quickFill(reportId) {
+            var input = document.getElementById("track-input");
+            if (input) {
+                input.value = reportId;
+                trackReport();
             }
         }
+
+        // Update visual step progress (1..4)
+        function updateTimeline(stepNumber) {
+            for (var i = 1; i <= 4; i++) {
+                var stepEl = document.getElementById("step-" + i);
+                if (!stepEl) continue;
+
+                var circle = stepEl.querySelector(".circle");
+                stepEl.classList.remove("done", "current");
+
+                if (i < stepNumber) {
+                    stepEl.classList.add("done");
+                    if (circle) circle.innerHTML = "&check;";
+                } else if (i === stepNumber) {
+                    stepEl.classList.add("current");
+                    if (circle) circle.innerText = "0" + i;
+                } else {
+                    if (circle) circle.innerText = "0" + i;
+                }
+            }
+        }
+
+        // Show/hide error helper
+        function showError(msg) {
+            var errEl = document.getElementById("track-error");
+            if (errEl) {
+                if (msg) {
+                    errEl.innerText = msg;
+                    errEl.style.display = "block";
+                } else {
+                    errEl.style.display = "none";
+                    errEl.innerText = "";
+                }
+            }
+        }
+
+        // Find report in sample demo database
+        function findReport(queryId) {
+            var normalizedId = queryId.trim().toUpperCase();
+            if (sampleDatabase[normalizedId]) {
+                return sampleDatabase[normalizedId];
+            }
+            return null;
+        }
+
+        // Main tracking function
+        function trackReport() {
+            showError("");
+            var input = document.getElementById("track-input");
+            var query = input ? input.value.trim() : "";
+
+            if (!query) {
+                showError("Please enter a valid Report ID (e.g. CS-2026-1042).");
+                if (input) input.focus();
+                return;
+            }
+
+            // Sanitized ID check
+            var cleanId = query.toUpperCase();
+            var statusDisplay = document.getElementById("status-display");
+            var notFoundCard = document.getElementById("not-found-card");
+
+            var reportData = findReport(cleanId);
+
+            if (reportData) {
+                // Populate display card
+                document.getElementById("display-id").innerText = reportData.id;
+                var badge = document.getElementById("display-status");
+                badge.innerText = reportData.statusText;
+                badge.className = "status-badge status-" + (reportData.statusCode || "review");
+
+                document.getElementById("meta-type").innerText = reportData.crimeType;
+                document.getElementById("meta-date").innerText = reportData.date;
+                document.getElementById("meta-location").innerText = reportData.location;
+                document.getElementById("meta-officer").innerText = reportData.officer;
+
+                document.getElementById("display-title").innerText = reportData.title;
+                document.getElementById("display-desc").innerText = reportData.desc;
+
+                updateTimeline(reportData.stepIndex || 2);
+
+                if (statusDisplay) statusDisplay.style.display = "block";
+                if (notFoundCard) notFoundCard.style.display = "none";
+            } else {
+                // Report not found state
+                if (statusDisplay) statusDisplay.style.display = "none";
+                if (notFoundCard) {
+                    var desc = document.getElementById("not-found-desc");
+                    if (desc) {
+                        desc.innerHTML = 'No report record found for <strong>"' + escapeHtml(cleanId) + '"</strong>. Please check your tracking number or try one of the demo IDs above.';
+                    }
+                    notFoundCard.style.display = "block";
+                }
+            }
+        }
+
+        function escapeHtml(text) {
+            var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Initial setup on DOM ready: read URL query params & handle Enter key
+        document.addEventListener("DOMContentLoaded", function () {
+            var input = document.getElementById("track-input");
+            if (input) {
+                input.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        trackReport();
+                    }
+                });
+            }
+
+            // Check if ?id=CS-... was passed in URL query
+            try {
+                var params = new URLSearchParams(window.location.search);
+                var idFromUrl = params.get("id");
+                if (idFromUrl) {
+                    if (input) input.value = idFromUrl.trim();
+                    trackReport();
+                }
+            } catch (e) {
+                console.error("URLSearchParams error:", e);
+            }
+        });
     </script>
 </body>
 
