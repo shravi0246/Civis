@@ -173,12 +173,63 @@
             padding: 0 30px;
         }
 
+        /* HELPLINE SEARCH / FILTER BAR */
+        .helpline-controls {
+            background: #ffffff;
+            border: 1px solid #e1e4e9;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .helpline-search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 11px 16px;
+            border: 1px solid #d0d5dd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .helpline-search-input:focus {
+            outline: none;
+            border-color: #0b1220;
+        }
+
+        .helpline-quick-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .h-tag {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .h-tag:hover, .h-tag.active {
+            background: #0b1220;
+            color: #ffffff;
+            border-color: #0b1220;
+        }
+
         .alert-banner {
             background: #ffe6e8;
             border-left: 5px solid #d62839;
             padding: 20px;
             border-radius: 6px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .alert-banner strong {
@@ -200,10 +251,19 @@
 
         .contact-card {
             background: white;
-            padding: 30px;
+            padding: 28px;
             border: 1px solid #e1e4e9;
             border-radius: 8px;
             border-top: 4px solid #0b1220;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
         }
 
         .contact-card.emergency-police {
@@ -211,26 +271,52 @@
         }
 
         .contact-card h3 {
-            font-size: 20px;
+            font-size: 19px;
             color: #0b1220;
             margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-dept-badge {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #eef2f6;
+            color: #475569;
+            text-transform: uppercase;
+        }
+
+        .contact-card.emergency-police .card-dept-badge {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .contact-card p {
             color: #667085;
             font-size: 14px;
             margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .btn-call-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .phone-number {
             display: inline-block;
             background: #0b1220;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 5px;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             transition: 0.3s;
         }
 
@@ -240,6 +326,102 @@
 
         .phone-number:hover {
             background: #b91c2c;
+        }
+
+        .btn-copy-num {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #0b1220;
+            padding: 9px 14px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-copy-num:hover {
+            background: #0b1220;
+            color: #ffffff;
+            border-color: #0b1220;
+        }
+
+        /* SOS Interactive Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 18, 32, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .sos-modal-box {
+            background: #ffffff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            border-top: 6px solid #d62839;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            padding: 30px;
+            position: relative;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #94a3b8;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: #0b1220;
+        }
+
+        /* Toast feedback */
+        .toast-notify {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0b1220;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            border: 1px solid #d62839;
+            z-index: 10001;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast-notify.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
 
         /* FOOTER */
@@ -362,7 +544,7 @@
 <body>
 
     <!-- FLOATING SOS BUTTON ON EVERY PAGE -->
-    <a href="emergency.html" class="floating-sos" title="Emergency SOS - Click for Immediate Help">
+    <a href="javascript:void(0)" onclick="openSosModal(event)" class="floating-sos" title="Emergency SOS - Click for Immediate Help">
         SOS
     </a>
 
@@ -408,30 +590,163 @@
             </p>
         </div>
 
-        <div class="contacts-grid">
-            <div class="contact-card emergency-police">
-                <h3>Police Control Room</h3>
-                <p>For instant armed response, theft in progress, or immediate protection.</p>
-                <a href="tel:100" class="phone-number">Call 100 / 911</a>
+        <!-- SEARCH AND QUICK FILTER CONTROLS -->
+        <div class="helpline-controls">
+            <input type="text" id="helpline-search" class="helpline-search-input" placeholder="Search helpline (e.g. Police, 100, Cyber, Women, Fire, Child)..." autocomplete="off">
+            <div class="helpline-quick-tags">
+                <button type="button" class="h-tag active" data-filter="all" onclick="filterHelplines('all', this)">All Services</button>
+                <button type="button" class="h-tag" data-filter="police" onclick="filterHelplines('police', this)">Police / Dispatch</button>
+                <button type="button" class="h-tag" data-filter="medical" onclick="filterHelplines('medical', this)">Medical</button>
+                <button type="button" class="h-tag" data-filter="women" onclick="filterHelplines('women', this)">Women Safety</button>
+                <button type="button" class="h-tag" data-filter="cyber" onclick="filterHelplines('cyber', this)">Cybercrime</button>
+                <button type="button" class="h-tag" data-filter="fire" onclick="filterHelplines('fire', this)">Fire &amp; Rescue</button>
+            </div>
+        </div>
+
+        <div class="contacts-grid" id="contacts-grid">
+            <!-- 1. Police Control Room -->
+            <div class="contact-card emergency-police" data-category="police" data-title="Police Control Room">
+                <div>
+                    <h3>
+                        Police Control Room
+                        <span class="card-dept-badge">Urgent</span>
+                    </h3>
+                    <p>For instant armed police response, theft in progress, violence, or immediate personal safety protection.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:100" class="phone-number">Call 100 / 911</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('100', 'Police Control Room')">
+                        <span>📋</span> Copy 100
+                    </button>
+                </div>
             </div>
 
-            <div class="contact-card">
-                <h3>Medical Ambulance</h3>
-                <p>For urgent medical assistance, serious injuries, or accidents.</p>
-                <a href="tel:102" class="phone-number">Call 102</a>
+            <!-- 2. Medical Ambulance -->
+            <div class="contact-card" data-category="medical" data-title="Medical Ambulance">
+                <div>
+                    <h3>
+                        Medical Ambulance
+                        <span class="card-dept-badge">Hospital</span>
+                    </h3>
+                    <p>For urgent medical emergencies, serious physical injuries, road accidents, and paramedic dispatch.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:102" class="phone-number">Call 102</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('102', 'Ambulance Helpline')">
+                        <span>📋</span> Copy 102
+                    </button>
+                </div>
             </div>
 
-            <div class="contact-card">
-                <h3>Women Safety Helpline</h3>
-                <p>24/7 dedicated helpline for women safety, distress, and harassment.</p>
-                <a href="tel:1091" class="phone-number">Call 1091</a>
+            <!-- 3. Women Safety Helpline -->
+            <div class="contact-card emergency-police" data-category="women" data-title="Women Safety Helpline">
+                <div>
+                    <h3>
+                        Women Safety Helpline
+                        <span class="card-dept-badge">24/7 Helpline</span>
+                    </h3>
+                    <p>Dedicated round-the-clock helpline for women in distress, stalking, harassment, or domestic threat situations.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:1091" class="phone-number">Call 1091</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('1091', 'Women Safety Helpline')">
+                        <span>📋</span> Copy 1091
+                    </button>
+                </div>
             </div>
 
-            <div class="contact-card">
-                <h3>National Emergency Number</h3>
-                <p>Unified all-in-one emergency service for police, fire, and ambulance.</p>
-                <a href="tel:112" class="phone-number">Call 112</a>
+            <!-- 4. National Unified Emergency -->
+            <div class="contact-card" data-category="police medical fire" data-title="National Emergency Number">
+                <div>
+                    <h3>
+                        National Emergency Number
+                        <span class="card-dept-badge">Unified 112</span>
+                    </h3>
+                    <p>Single integrated emergency response system connecting police, fire services, and medical dispatch.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:112" class="phone-number">Call 112</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('112', 'Unified Emergency 112')">
+                        <span>📋</span> Copy 112
+                    </button>
+                </div>
             </div>
+
+            <!-- 5. Cyber Crime Helpline -->
+            <div class="contact-card" data-category="cyber" data-title="National Cyber Crime Helpline">
+                <div>
+                    <h3>
+                        Cyber Crime Helpline
+                        <span class="card-dept-badge">Financial Fraud</span>
+                    </h3>
+                    <p>Immediate reporting of unauthorized bank debit, UPI fraud, phishing scams, and digital identity blackmail.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:1930" class="phone-number">Call 1930</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('1930', 'Cyber Crime Helpline')">
+                        <span>📋</span> Copy 1930
+                    </button>
+                </div>
+            </div>
+
+            <!-- 6. Fire & Rescue -->
+            <div class="contact-card" data-category="fire" data-title="Fire and Rescue Services">
+                <div>
+                    <h3>
+                        Fire &amp; Rescue Services
+                        <span class="card-dept-badge">Fire Safety</span>
+                    </h3>
+                    <p>Emergency fire suppression, building rescue, gas leaks, and industrial hazard containment.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:101" class="phone-number">Call 101</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('101', 'Fire Brigade')">
+                        <span>📋</span> Copy 101
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. Child Helpline -->
+            <div class="contact-card" data-category="police women" data-title="Childline Assistance">
+                <div>
+                    <h3>
+                        Childline Assistance
+                        <span class="card-dept-badge">Child Safety</span>
+                    </h3>
+                    <p>24-hour national emergency outreach service for children in need of care, rescue, and protection.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:1098" class="phone-number">Call 1098</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('1098', 'Childline Helpline')">
+                        <span>📋</span> Copy 1098
+                    </button>
+                </div>
+            </div>
+
+            <!-- 8. Senior Citizen Helpline -->
+            <div class="contact-card" data-category="police" data-title="Senior Citizen Support">
+                <div>
+                    <h3>
+                        Senior Citizen Support
+                        <span class="card-dept-badge">Elder Help</span>
+                    </h3>
+                    <p>Dedicated elder care, distress protection, abuse reporting, and rapid emergency police welfare assistance.</p>
+                </div>
+                <div class="btn-call-group">
+                    <a href="tel:14567" class="phone-number">Call 14567</a>
+                    <button type="button" class="btn-copy-num" onclick="copyNumber('14567', 'Senior Citizen Helpline')">
+                        <span>📋</span> Copy 14567
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- No results found element -->
+        <div id="no-contacts-msg" style="display: none; text-align: center; padding: 40px 20px; background: white; border: 1px solid #e1e4e9; border-radius: 8px; margin-top: 20px;">
+            <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+            <h4 style="color: #0b1220; margin-bottom: 6px;">No Helplines Match Your Search</h4>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">Please check spelling or dial 112 for universal emergency dispatch.</p>
+            <button type="button" class="h-tag active" onclick="resetHelplines()">Show All Helplines</button>
         </div>
     </main>
 
@@ -480,12 +795,188 @@
         </p>
     </footer>
 
-    <!-- BASIC JAVASCRIPT -->
+    <!-- INTERACTIVE SOS EMERGENCY MODAL -->
+    <div id="sos-modal-overlay" class="modal-overlay" onclick="closeSosModal(event)">
+        <div class="sos-modal-box" onclick="event.stopPropagation()">
+            <button type="button" class="modal-close-btn" onclick="closeSosModalDirect()">&times;</button>
+            <div style="font-size: 38px; color: #d62839; margin-bottom: 8px;">🚨</div>
+            <h2 style="color: #0b1220; font-size: 22px; margin-bottom: 6px;">Emergency Quick Dispatch</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
+                Choose an emergency action below or click to copy the direct telephone number:
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="tel:112" style="display: flex; align-items: center; justify-content: space-between; background: #d62839; color: white; padding: 12px 18px; border-radius: 6px; font-weight: bold; text-decoration: none;">
+                    <span>📞 Universal Emergency Dispatch</span>
+                    <span style="font-size: 18px; letter-spacing: 1px;">112</span>
+                </a>
+                <a href="tel:100" style="display: flex; align-items: center; justify-content: space-between; background: #0b1220; color: white; padding: 12px 18px; border-radius: 6px; font-weight: bold; text-decoration: none;">
+                    <span>🚔 Immediate Police Control</span>
+                    <span style="font-size: 18px; letter-spacing: 1px;">100</span>
+                </a>
+                <a href="tel:102" style="display: flex; align-items: center; justify-content: space-between; background: #0b1220; color: white; padding: 12px 18px; border-radius: 6px; font-weight: bold; text-decoration: none;">
+                    <span>🚑 Medical Ambulance Service</span>
+                    <span style="font-size: 18px; letter-spacing: 1px;">102</span>
+                </a>
+                <a href="tel:1091" style="display: flex; align-items: center; justify-content: space-between; background: #0b1220; color: white; padding: 12px 18px; border-radius: 6px; font-weight: bold; text-decoration: none;">
+                    <span>🛡️ Women Safety Helpline</span>
+                    <span style="font-size: 18px; letter-spacing: 1px;">1091</span>
+                </a>
+            </div>
+
+            <p style="font-size: 12px; color: #94a3b8; margin-top: 18px; text-align: center;">
+                Press Escape or click outside to dismiss this prompt.
+            </p>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="emergency-toast" class="toast-notify">Helpline number copied to clipboard!</div>
+
+    <!-- INTERMEDIATE JAVASCRIPT LOGIC -->
     <script>
+        var activeFilter = "all";
+        var toastTimer = null;
+
+        // Mobile menu toggle with outside click and escape key handling
         function toggleMenu() {
             var menu = document.getElementById("nav-links");
             menu.classList.toggle("active");
         }
+
+        document.addEventListener("click", function (event) {
+            var nav = document.getElementById("nav-links");
+            var hamburger = document.querySelector(".hamburger");
+            if (nav && nav.classList.contains("active")) {
+                if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+                    nav.classList.remove("active");
+                }
+            }
+        });
+
+        // SOS Modal management
+        function openSosModal(event) {
+            if (event) event.preventDefault();
+            var modal = document.getElementById("sos-modal-overlay");
+            if (modal) modal.classList.add("open");
+        }
+
+        function closeSosModal(event) {
+            var modal = document.getElementById("sos-modal-overlay");
+            if (modal && event.target === modal) {
+                modal.classList.remove("open");
+            }
+        }
+
+        function closeSosModalDirect() {
+            var modal = document.getElementById("sos-modal-overlay");
+            if (modal) modal.classList.remove("open");
+        }
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                var nav = document.getElementById("nav-links");
+                if (nav) nav.classList.remove("active");
+                closeSosModalDirect();
+            }
+        });
+
+        // Category filter
+        function filterHelplines(filterKey, buttonEl) {
+            activeFilter = filterKey;
+
+            var buttons = document.querySelectorAll(".h-tag");
+            buttons.forEach(function (btn) {
+                btn.classList.remove("active");
+            });
+            if (buttonEl) buttonEl.classList.add("active");
+
+            applyHelplineFilter();
+        }
+
+        // Apply search keyword + category filter
+        function applyHelplineFilter() {
+            var input = document.getElementById("helpline-search");
+            var query = input ? input.value.toLowerCase().trim() : "";
+            var cards = document.querySelectorAll(".contact-card");
+            var visibleCount = 0;
+
+            cards.forEach(function (card) {
+                var cat = card.getAttribute("data-category") || "";
+                var text = card.innerText.toLowerCase();
+
+                var matchesCat = (activeFilter === "all" || cat.indexOf(activeFilter) !== -1);
+                var matchesQuery = (!query || text.indexOf(query) !== -1);
+
+                if (matchesCat && matchesQuery) {
+                    card.style.display = "flex";
+                    visibleCount++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            var noMsg = document.getElementById("no-contacts-msg");
+            if (noMsg) {
+                noMsg.style.display = visibleCount === 0 ? "block" : "none";
+            }
+        }
+
+        function resetHelplines() {
+            var input = document.getElementById("helpline-search");
+            if (input) input.value = "";
+            var allBtn = document.querySelector('.h-tag[data-filter="all"]');
+            filterHelplines("all", allBtn);
+        }
+
+        // Copy number with toast notification
+        function copyNumber(num, name) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(num).then(function () {
+                    showToast("Copied " + name + " (" + num + ") to clipboard!");
+                }).catch(function () {
+                    fallbackCopy(num, name);
+                });
+            } else {
+                fallbackCopy(num, name);
+            }
+        }
+
+        function fallbackCopy(num, name) {
+            var ta = document.createElement("textarea");
+            ta.value = num;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand("copy");
+                showToast("Copied " + name + " (" + num + ") to clipboard!");
+            } catch (err) {
+                console.warn("Copy fallback failed:", err);
+            }
+            document.body.removeChild(ta);
+        }
+
+        function showToast(message) {
+            var toast = document.getElementById("emergency-toast");
+            if (!toast) return;
+            toast.innerText = message;
+            toast.classList.add("show");
+
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+        // Initialize event listener on search box
+        document.addEventListener("DOMContentLoaded", function () {
+            var input = document.getElementById("helpline-search");
+            if (input) {
+                input.addEventListener("input", applyHelplineFilter);
+            }
+        });
     </script>
 </body>
 
