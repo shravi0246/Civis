@@ -732,19 +732,23 @@
                     <option>Vandalism / Property Damage</option>
                     <option>Other</option>
                 </select>
+                <div class="error-msg" id="type-error">Please select a crime category.</div>
 
                 <label for="crime-date">Date of Incident <span class="req-star">*</span></label>
                 <input type="date" id="crime-date" required>
+                <div class="error-msg" id="date-error">Please provide a valid incident date (cannot be in the future).</div>
 
                 <label for="crime-time">Approximate Time</label>
                 <input type="time" id="crime-time">
 
                 <label for="crime-loc">Location <span class="req-star">*</span></label>
                 <input type="text" id="crime-loc" placeholder="Enter incident location or landmark" required>
+                <div class="error-msg" id="loc-error">Incident location is required.</div>
 
                 <label for="crime-desc">Description <span class="req-star">*</span></label>
                 <textarea id="crime-desc" rows="5" placeholder="Describe what happened in detail..."
                     required></textarea>
+                <div class="error-msg" id="desc-error">Please describe the incident (at least 10 characters).</div>
 
                 <!-- UPLOAD EVIDENCE SECTION -->
                 <label for="crime-evidence">Upload Evidence (Optional)</label>
@@ -757,7 +761,8 @@
                         <p class="upload-prompt"><strong>Click to upload evidence</strong> or drag &amp; drop file</p>
                         <span class="upload-browse-btn">Browse Files</span>
                     </div>
-                    <p class="upload-formats-note">Supported formats: JPG, PNG, JPEG, MP4, PDF, DOC</p>
+                    <p class="upload-formats-note">Supported formats: JPG, PNG, JPEG, MP4, PDF, DOC (Max size: 10 MB)</p>
+                    <div class="error-msg" id="evidence-error">File exceeds 10 MB limit or unsupported format.</div>
 
                     <!-- File Info and Preview Display -->
                     <div class="evidence-preview-wrap" id="evidence-preview-wrap" style="display: none;">
@@ -782,14 +787,18 @@
 
                 <label for="crime-phone">Contact Number <span class="req-star">*</span></label>
                 <input type="tel" id="crime-phone" placeholder="Enter 10-digit phone number" maxlength="10" required>
-                <div class="error-msg" id="phone-error">Phone Number is required.</div>
+                <div class="error-msg" id="phone-error">Please enter a valid 10-digit phone number.</div>
 
                 <label class="check">
                     <input type="checkbox" id="confirm-check" required>
                     I confirm that the information provided is accurate to the best of my knowledge.
                 </label>
+                <div class="error-msg" id="check-error">You must confirm accuracy before submitting.</div>
 
-                <button type="submit">Submit Report &rarr;</button>
+                <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+                    <button type="submit" id="submit-btn" style="flex: 1; min-width: 180px;">Submit Report &rarr;</button>
+                    <button type="button" id="reset-btn" onclick="resetForm()" style="background: #e2e8f0; color: #0b1220; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;">Reset Form</button>
+                </div>
             </form>
 
             <!-- SUCCESS CARD (DISPLAYED ONLY AFTER SUCCESSFUL SUBMISSION) -->
@@ -802,13 +811,14 @@
 
                 <div class="report-id-container">
                     <span class="report-id-label">Your Report ID:</span>
-                    <span class="report-id-code">CS-2026-1042</span>
+                    <span class="report-id-code" id="confirmed-report-id">CS-2026-1042</span>
                 </div>
 
-                <p class="success-instructions">Please save this ID to track your complaint.</p>
+                <p class="success-instructions">Please save this ID to track your complaint in real time.</p>
 
-                <div>
-                    <a href="track.html" class="btn-track-success">Track Report &rarr;</a>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <a href="track.html" id="track-link-btn" class="btn-track-success">Track Report &rarr;</a>
+                    <button type="button" onclick="submitAnotherReport()" style="background: #0b1220; color: #ffffff; border: none; padding: 10px 18px; border-radius: 5px; font-weight: bold; cursor: pointer;">Submit Another Report</button>
                 </div>
             </div>
         </div>
@@ -863,15 +873,85 @@
 
     <!-- BASIC JAVASCRIPT -->
     <script>
+        // 1. Mobile Menu Functionality
         function toggleMenu() {
             var menu = document.getElementById("nav-links");
-            menu.classList.toggle("active");
+            if (menu) menu.classList.toggle("active");
         }
 
-        // Handle Evidence File Upload & Preview
+        // Close mobile menu when clicking outside or pressing Escape
+        document.addEventListener("click", function (e) {
+            var menu = document.getElementById("nav-links");
+            var hamburger = document.querySelector(".hamburger");
+            if (menu && menu.classList.contains("active")) {
+                if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+                    menu.classList.remove("active");
+                }
+            }
+        });
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") {
+                var menu = document.getElementById("nav-links");
+                if (menu) menu.classList.remove("active");
+            }
+        });
+
+        // 2. Prevent Future Dates on Incident Date
+        var dateInput = document.getElementById("crime-date");
+        var dateError = document.getElementById("date-error");
+        var todayStr = new Date().toISOString().split("T")[0];
+        if (dateInput) {
+            dateInput.setAttribute("max", todayStr);
+            dateInput.addEventListener("change", function () {
+                if (this.value) {
+                    if (this.value > todayStr) {
+                        dateError.textContent = "Incident date cannot be in the future.";
+                        dateError.classList.add("show");
+                        this.classList.add("input-error");
+                    } else {
+                        dateError.textContent = "";
+                        dateError.classList.remove("show");
+                        this.classList.remove("input-error");
+                    }
+                }
+            });
+        }
+
+        // 3. Evidence File Upload & Preview Handler
+        var MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+        var ALLOWED_EXTS = ["jpg", "jpeg", "png", "mp4", "pdf", "doc", "docx"];
+
         function handleEvidenceFile(input) {
             var file = input.files && input.files[0];
+            var evidenceError = document.getElementById("evidence-error");
             if (!file) return;
+
+            // Validate file size
+            if (file.size > MAX_FILE_SIZE) {
+                if (evidenceError) {
+                    evidenceError.textContent = "File size exceeds 10 MB limit. Please choose a smaller file.";
+                    evidenceError.classList.add("show");
+                }
+                input.value = "";
+                return;
+            }
+
+            // Validate file extension
+            var ext = file.name.split('.').pop().toLowerCase();
+            if (!ALLOWED_EXTS.includes(ext)) {
+                if (evidenceError) {
+                    evidenceError.textContent = "Unsupported format (." + ext + "). Please upload JPG, PNG, MP4, PDF, or DOC.";
+                    evidenceError.classList.add("show");
+                }
+                input.value = "";
+                return;
+            }
+
+            if (evidenceError) {
+                evidenceError.textContent = "";
+                evidenceError.classList.remove("show");
+            }
 
             var previewWrap = document.getElementById("evidence-preview-wrap");
             var nameEl = document.getElementById("preview-file-name");
@@ -880,19 +960,17 @@
             var imgContainer = document.getElementById("image-preview-container");
             var imgPreview = document.getElementById("evidence-image-preview");
 
-            // Display file name & formatted size
             nameEl.textContent = file.name;
             var sizeInKB = (file.size / 1024).toFixed(1);
             var sizeStr = sizeInKB > 1024 ? (sizeInKB / 1024).toFixed(2) + " MB" : sizeInKB + " KB";
             sizeEl.textContent = sizeStr;
 
-            var ext = file.name.split('.').pop().toLowerCase();
             var isImage = ['jpg', 'jpeg', 'png'].includes(ext) || file.type.startsWith('image/');
             var isVideo = ext === 'mp4' || file.type === 'video/mp4';
             var isDoc = ['pdf', 'doc', 'docx'].includes(ext) || file.type.includes('pdf') || file.type.includes('word');
 
             if (isImage) {
-                iconEl.innerHTML = "&#128444;"; // image icon
+                iconEl.innerHTML = "&#128444;";
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     imgPreview.src = e.target.result;
@@ -903,9 +981,9 @@
                 imgContainer.style.display = "none";
                 imgPreview.src = "";
                 if (isVideo) {
-                    iconEl.innerHTML = "&#127916;"; // video icon
+                    iconEl.innerHTML = "&#127916;";
                 } else if (isDoc) {
-                    iconEl.innerHTML = "&#128196;"; // document icon
+                    iconEl.innerHTML = "&#128196;";
                 } else {
                     iconEl.innerHTML = "&#128194;";
                 }
@@ -914,7 +992,6 @@
             previewWrap.style.display = "block";
         }
 
-        // Remove Evidence File
         function removeEvidenceFile() {
             var input = document.getElementById("crime-evidence");
             if (input) input.value = "";
@@ -924,6 +1001,11 @@
             if (imgPreview) imgPreview.src = "";
             var imgContainer = document.getElementById("image-preview-container");
             if (imgContainer) imgContainer.style.display = "none";
+            var evidenceError = document.getElementById("evidence-error");
+            if (evidenceError) {
+                evidenceError.textContent = "";
+                evidenceError.classList.remove("show");
+            }
         }
 
         // Drag & Drop Support
@@ -954,7 +1036,40 @@
             }, false);
         }
 
-        // Real-time input listeners for validation
+        // 4. Real-time Field Listeners to Clear Errors
+        var crimeType = document.getElementById("crime-type");
+        var typeError = document.getElementById("type-error");
+        if (crimeType) {
+            crimeType.addEventListener("change", function () {
+                if (this.value) {
+                    typeError.classList.remove("show");
+                    this.classList.remove("input-error");
+                }
+            });
+        }
+
+        var crimeLoc = document.getElementById("crime-loc");
+        var locError = document.getElementById("loc-error");
+        if (crimeLoc) {
+            crimeLoc.addEventListener("input", function () {
+                if (this.value.trim().length > 0) {
+                    locError.classList.remove("show");
+                    this.classList.remove("input-error");
+                }
+            });
+        }
+
+        var crimeDesc = document.getElementById("crime-desc");
+        var descError = document.getElementById("desc-error");
+        if (crimeDesc) {
+            crimeDesc.addEventListener("input", function () {
+                if (this.value.trim().length >= 10) {
+                    descError.classList.remove("show");
+                    this.classList.remove("input-error");
+                }
+            });
+        }
+
         var nameInput = document.getElementById("crime-name");
         var nameError = document.getElementById("name-error");
         if (nameInput) {
@@ -971,7 +1086,6 @@
         var phoneError = document.getElementById("phone-error");
         if (phoneInput) {
             phoneInput.addEventListener("input", function () {
-                // Restrict input strictly to numbers, max 10 digits
                 this.value = this.value.replace(/\D/g, '').slice(0, 10);
                 if (this.value.length === 10) {
                     phoneError.textContent = "";
@@ -985,99 +1099,208 @@
             });
         }
 
-        // Form Submission Handler with Validation
+        var confirmCheck = document.getElementById("confirm-check");
+        var checkError = document.getElementById("check-error");
+        if (confirmCheck) {
+            confirmCheck.addEventListener("change", function () {
+                if (this.checked && checkError) {
+                    checkError.classList.remove("show");
+                }
+            });
+        }
+
+        // 5. Basic Local Storage Form Draft (Incomplete Draft Only)
+        var DRAFT_KEY = "civicshield_report_draft";
+
+        // Save form draft to localStorage whenever fields are entered or changed
+        function saveReportDraft() {
+            var draft = {
+                type: document.getElementById("crime-type") ? document.getElementById("crime-type").value : "",
+                date: document.getElementById("crime-date") ? document.getElementById("crime-date").value : "",
+                time: document.getElementById("crime-time") ? document.getElementById("crime-time").value : "",
+                location: document.getElementById("crime-loc") ? document.getElementById("crime-loc").value : "",
+                description: document.getElementById("crime-desc") ? document.getElementById("crime-desc").value : "",
+                name: document.getElementById("crime-name") ? document.getElementById("crime-name").value : "",
+                phone: document.getElementById("crime-phone") ? document.getElementById("crime-phone").value : ""
+            };
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        }
+
+        // Restore saved draft values automatically when user loads or refreshes the page
+        function loadReportDraft() {
+            var saved = localStorage.getItem(DRAFT_KEY);
+            if (!saved) return;
+
+            try {
+                var draft = JSON.parse(saved);
+                if (draft) {
+                    if (draft.type && document.getElementById("crime-type")) {
+                        document.getElementById("crime-type").value = draft.type;
+                    }
+                    if (draft.date && document.getElementById("crime-date")) {
+                        document.getElementById("crime-date").value = draft.date;
+                    }
+                    if (draft.time && document.getElementById("crime-time")) {
+                        document.getElementById("crime-time").value = draft.time;
+                    }
+                    if (draft.location && document.getElementById("crime-loc")) {
+                        document.getElementById("crime-loc").value = draft.location;
+                    }
+                    if (draft.description && document.getElementById("crime-desc")) {
+                        document.getElementById("crime-desc").value = draft.description;
+                    }
+                    if (draft.name && document.getElementById("crime-name")) {
+                        document.getElementById("crime-name").value = draft.name;
+                    }
+                    if (draft.phone && document.getElementById("crime-phone")) {
+                        document.getElementById("crime-phone").value = draft.phone;
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not parse saved draft:", e);
+            }
+        }
+
+        // Clear saved draft from localStorage
+        function clearReportDraft() {
+            localStorage.removeItem(DRAFT_KEY);
+        }
+
+        // Attach input and change listeners on the report form to auto-save draft
+        var reportForm = document.getElementById("report-form");
+        if (reportForm) {
+            reportForm.addEventListener("input", saveReportDraft);
+            reportForm.addEventListener("change", saveReportDraft);
+        }
+
+        // Restore draft on initial page load
+        document.addEventListener("DOMContentLoaded", loadReportDraft);
+
+        // 6. Reset Form Helper
+        function resetForm() {
+            var form = document.getElementById("report-form");
+            if (form) form.reset();
+            removeEvidenceFile();
+            clearReportDraft(); // Clear draft when user resets/clears form
+
+            // Clear all error states
+            document.querySelectorAll(".error-msg").forEach(function (el) {
+                el.classList.remove("show");
+            });
+            document.querySelectorAll(".input-error").forEach(function (el) {
+                el.classList.remove("input-error");
+            });
+            var successCard = document.getElementById("success-card");
+            if (successCard) successCard.style.display = "none";
+        }
+
+        function submitAnotherReport() {
+            resetForm();
+            var form = document.getElementById("report-form");
+            if (form) form.style.display = "block";
+            window.scrollTo({ top: 300, behavior: "smooth" });
+        }
+
+        // 7. Form Submission
+        var isSubmitting = false;
+
         function submitForm(event) {
             event.preventDefault();
+            if (isSubmitting) return;
 
             var isValid = true;
             var firstInvalidEl = null;
 
-            // 1. Validate Type of Crime
-            var crimeType = document.getElementById("crime-type");
-            if (crimeType && !crimeType.value) {
-                crimeType.classList.add("input-error");
+            // Validate Crime Type
+            if (!crimeType || !crimeType.value) {
+                typeError.classList.add("show");
+                if (crimeType) crimeType.classList.add("input-error");
                 if (!firstInvalidEl) firstInvalidEl = crimeType;
                 isValid = false;
-            } else if (crimeType) {
+            } else {
+                typeError.classList.remove("show");
                 crimeType.classList.remove("input-error");
             }
 
-            // 2. Validate Incident Date
-            var crimeDate = document.getElementById("crime-date");
-            if (crimeDate && !crimeDate.value) {
-                crimeDate.classList.add("input-error");
-                if (!firstInvalidEl) firstInvalidEl = crimeDate;
+            // Validate Date
+            if (!dateInput || !dateInput.value) {
+                dateError.textContent = "Incident date is required.";
+                dateError.classList.add("show");
+                if (dateInput) dateInput.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = dateInput;
                 isValid = false;
-            } else if (crimeDate) {
-                crimeDate.classList.remove("input-error");
+            } else if (dateInput.value > todayStr) {
+                dateError.textContent = "Incident date cannot be in the future.";
+                dateError.classList.add("show");
+                dateInput.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = dateInput;
+                isValid = false;
+            } else {
+                dateError.classList.remove("show");
+                dateInput.classList.remove("input-error");
             }
 
-            // 3. Validate Location
-            var crimeLoc = document.getElementById("crime-loc");
-            if (crimeLoc && !crimeLoc.value.trim()) {
-                crimeLoc.classList.add("input-error");
+            // Validate Location
+            if (!crimeLoc || !crimeLoc.value.trim()) {
+                locError.classList.add("show");
+                if (crimeLoc) crimeLoc.classList.add("input-error");
                 if (!firstInvalidEl) firstInvalidEl = crimeLoc;
                 isValid = false;
-            } else if (crimeLoc) {
+            } else {
+                locError.classList.remove("show");
                 crimeLoc.classList.remove("input-error");
             }
 
-            // 4. Validate Description
-            var crimeDesc = document.getElementById("crime-desc");
-            if (crimeDesc && !crimeDesc.value.trim()) {
-                crimeDesc.classList.add("input-error");
+            // Validate Description
+            if (!crimeDesc || crimeDesc.value.trim().length < 10) {
+                descError.classList.add("show");
+                if (crimeDesc) crimeDesc.classList.add("input-error");
                 if (!firstInvalidEl) firstInvalidEl = crimeDesc;
                 isValid = false;
-            } else if (crimeDesc) {
+            } else {
+                descError.classList.remove("show");
                 crimeDesc.classList.remove("input-error");
             }
 
-            // 5. Validate Mandatory Name
-            if (nameInput) {
-                var nameVal = nameInput.value.trim();
-                if (!nameVal) {
-                    nameError.textContent = "Name is required.";
-                    nameError.classList.add("show");
-                    nameInput.classList.add("input-error");
-                    if (!firstInvalidEl) firstInvalidEl = nameInput;
-                    isValid = false;
-                } else {
-                    nameError.textContent = "";
-                    nameError.classList.remove("show");
-                    nameInput.classList.remove("input-error");
-                }
-            }
-
-            // 6. Validate Mandatory Phone Number
-            if (phoneInput) {
-                var phoneVal = phoneInput.value.trim();
-                if (!phoneVal) {
-                    phoneError.textContent = "Phone Number is required.";
-                    phoneError.classList.add("show");
-                    phoneInput.classList.add("input-error");
-                    if (!firstInvalidEl) firstInvalidEl = phoneInput;
-                    isValid = false;
-                } else if (!/^\d{10}$/.test(phoneVal)) {
-                    phoneError.textContent = "Please enter a valid 10-digit phone number.";
-                    phoneError.classList.add("show");
-                    phoneInput.classList.add("input-error");
-                    if (!firstInvalidEl) firstInvalidEl = phoneInput;
-                    isValid = false;
-                } else {
-                    phoneError.textContent = "";
-                    phoneError.classList.remove("show");
-                    phoneInput.classList.remove("input-error");
-                }
-            }
-
-            // 7. Validate Checkbox
-            var confirmCheck = document.getElementById("confirm-check");
-            if (confirmCheck && !confirmCheck.checked) {
-                confirmCheck.focus();
+            // Validate Name
+            if (!nameInput || !nameInput.value.trim()) {
+                nameError.textContent = "Name is required.";
+                nameError.classList.add("show");
+                if (nameInput) nameInput.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = nameInput;
                 isValid = false;
+            } else {
+                nameError.classList.remove("show");
+                nameInput.classList.remove("input-error");
             }
 
-            // Stop if any field is invalid
+            // Validate Phone
+            if (!phoneInput || !phoneInput.value.trim()) {
+                phoneError.textContent = "Phone Number is required.";
+                phoneError.classList.add("show");
+                if (phoneInput) phoneInput.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = phoneInput;
+                isValid = false;
+            } else if (!/^\d{10}$/.test(phoneInput.value.trim())) {
+                phoneError.textContent = "Please enter a valid 10-digit phone number.";
+                phoneError.classList.add("show");
+                phoneInput.classList.add("input-error");
+                if (!firstInvalidEl) firstInvalidEl = phoneInput;
+                isValid = false;
+            } else {
+                phoneError.classList.remove("show");
+                phoneInput.classList.remove("input-error");
+            }
+
+            // Validate Confirmation Checkbox
+            if (!confirmCheck || !confirmCheck.checked) {
+                if (checkError) checkError.classList.add("show");
+                if (!firstInvalidEl) firstInvalidEl = confirmCheck;
+                isValid = false;
+            } else if (checkError) {
+                checkError.classList.remove("show");
+            }
+
             if (!isValid) {
                 if (firstInvalidEl) {
                     firstInvalidEl.focus();
@@ -1085,19 +1308,45 @@
                 return false;
             }
 
-            // On Successful Submission:
-            // Display professional success card below the form
-            var successCard = document.getElementById("success-card");
-            if (successCard) {
-                successCard.style.display = "block";
-                setTimeout(function () {
-                    successCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                }, 100);
+            // Prevent duplicate clicks
+            isSubmitting = true;
+            var submitBtn = document.getElementById("submit-btn");
+            var originalBtnText = submitBtn ? submitBtn.innerHTML : "Submit Report &rarr;";
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = "Recording Report...";
             }
 
-            // Reset form fields and evidence upload
-            event.target.reset();
-            removeEvidenceFile();
+            setTimeout(function () {
+                // Clear the saved draft upon successful submission
+                clearReportDraft();
+
+                // Generate a realistic demonstration ID
+                var randomNum = Math.floor(1000 + Math.random() * 9000);
+                var generatedId = "CS-2026-" + randomNum;
+
+                // Update success card
+                var confirmedIdEl = document.getElementById("confirmed-report-id");
+                if (confirmedIdEl) confirmedIdEl.textContent = generatedId;
+
+                var trackLink = document.getElementById("track-link-btn");
+                if (trackLink) trackLink.href = "track.html?id=" + encodeURIComponent(generatedId);
+
+                // Show success card and hide form
+                var successCard = document.getElementById("success-card");
+                var formEl = document.getElementById("report-form");
+                if (formEl) formEl.style.display = "none";
+                if (successCard) {
+                    successCard.style.display = "block";
+                    successCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+                isSubmitting = false;
+            }, 600);
         }
     </script>
 </body>
